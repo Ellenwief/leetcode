@@ -43,18 +43,28 @@ class Solution {
     public int twoCitySchedCost(int[][] costs) {
         List<Cost> list = Stream.of(costs).map(c -> new Cost(c[0], c[1])).collect(Collectors.toList());
         list.sort((c1, c2) -> {
-            return Integer.compare(c1.a + c1.b, c2.a + c2.b);
+            return Integer.compare(Math.abs(c2.a - c2.b), Math.abs(c1.a - c1.b));
         });
         int half = list.size()/2;
         int a = 0;
+        int b = 0;
         int sum = 0;
         for(Cost c : list) {
-            if(c.a < c.b && a < half) {
+            if(c.a <= c.b && a < half) {
                 sum += c.a;
-                a++;dd
+                a++;
+            }
+            else if(c.a > c.b && b < half) {
+                sum += c.b;
+                b++;
+            }
+            else if(a < half) {
+                sum += c.a;
+                a++;
             }
             else {
                 sum += c.b;
+                b++;
             }
         }
 
@@ -68,6 +78,10 @@ class Solution {
         public Cost(int a, int b) {
             this.a = a;
             this.b = b;
+        }
+
+        public String toString() {
+            return "a: "+ a +", b: "+ b;
         }
     }
 }
