@@ -24,20 +24,16 @@
 class Solution {
     public int[] productExceptSelf(int[] nums) {
         int len = nums.length;
-        int[] left = new int[len];
-        int[] right = new int[len];
+        int[] result = new int[len];
         for(int i = 0, p = 1; i < len; i++) {
-            left[i] = p;
+            result[i] = p;
             p *= nums[i];
         }
         for(int i = len-1, p = 1; i >= 0; i--) {
-            right[i] = p;
+            result[i] *= p;
             p *= nums[i];
         }
-        for(int i = 0; i < len; i++) {
-            left[i] *= right[i];
-        }
-        return left;
+        return result;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
