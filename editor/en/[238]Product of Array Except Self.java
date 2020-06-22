@@ -23,17 +23,21 @@
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int[] p = new int[nums.length];
-        for(int i = 0; i < nums.length; i++) {
-            int pp = 1;
-            for(int j = 0; j < nums.length; j++) {
-                if(i == j) continue;
-                pp *= nums[j];
-            }
-            p[i] = pp;
+        int len = nums.length;
+        int[] left = new int[len];
+        int[] right = new int[len];
+        for(int i = 0, p = 1; i < len; i++) {
+            left[i] = p;
+            p *= nums[i];
         }
-
-        return p;
+        for(int i = len-1, p = 1; i >= 0; i--) {
+            right[i] = p;
+            p *= nums[i];
+        }
+        for(int i = 0; i < len; i++) {
+            left[i] *= right[i];
+        }
+        return left;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
