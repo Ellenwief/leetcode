@@ -15,79 +15,48 @@
 // Related Topics Array
 
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public void nextPermutation(int[] nums) {
-        int totalStep = this.factorial(nums.length);
-        int step = 0;
-        int fixed = 0;
-        int len = nums.length;
-        for(int i = 0; i < len-1; i++) {
-            int pos = i+1;
-            int remain = len - pos;
-            int f = this.factorial(remain);
-            int p = this.currentPos(nums, i);
-            if(p < remain) {
-                fixed = i;
-            }
-            step += f * p;
-        }
-
-        if(step + 1 == totalStep) {
-            Arrays.sort(nums);
-            return;
-        }
-        else {
-            this.rearrange(nums, fixed);
-        }
+        rearrangeNextPermutation(nums, 0, nums.length-1);
     }
 
-    private int factorial(int n) {
-        if(n == 1) {
-            return 1;
+    private boolean rearrangeNextPermutation(int[] nums, int start, int last) {
+        if(start == last) {
+            return false;
         }
-        return n * this.factorial(n - 1);
-    }
 
-    private int currentPos(int[] nums, int i) {
-        int[] remain = Arrays.copyOfRange(nums, i, nums.length);
-        Arrays.sort(remain);
-        for(int n = 0; n < remain.length; n++) {
-            if(remain[n] == nums[i]) {
-                return n;
-            }
-        }
-        return -1;
-    }
-
-    private void rearrange(int[] nums, int i) {
-        int[] remain = Arrays.copyOfRange(nums, i, nums.length);
-        TreeSet<Integer> tree = new TreeSet<>(Arrays.stream(remain).boxed().collect(Collectors.toList()));
-        int p = 0;
-        Arrays.sort(remain);
-        while(!tree.isEmpty()) {
-            if(nums[i] == tree.pollFirst()) {
-                if(tree.isEmpty()) {
-                    Arrays.sort(nums);
-                    return;
+        int i = last;
+        while(true) {
+            int ii = i--;
+            if(nums[i] < nums[ii]) {
+                int j = last;
+                while(nums[i] >= nums[j]) {
+                    if(--j <= 0) break;
                 }
-                nums[i] = tree.pollFirst();
-                break;
+                swap(nums, i, j);
+                reverse(nums, ii, last);
+                return true;
+            }
+            if(i == start) {
+                reverse(nums, start, last);
+                return false;
             }
         }
-        int fixed = i;
-        for(int n = 0; n < remain.length; n++) {
-            if(nums[fixed] == remain[n]) {
-                continue;
-            }
-            nums[++i] = remain[n];
-            if(i == nums.length-1) {
-                break;
+    }
+
+    private void swap(int[] nums, int src, int dest) {
+        int temp = nums[src];
+        nums[src] = nums[dest];
+        nums[dest] = temp;
+    }
+
+    private void reverse(int[] nums, int src, int dest) {
+        for(int i = src; i < dest; i++) {
+            for(int j = src; j < dest; j++) {
+                if(nums[j] > nums[j+1]) {
+                    swap(nums, j, j+1);
+                }
             }
         }
     }
